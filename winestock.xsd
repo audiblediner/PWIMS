@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+    targetNamespace="http://example.org/ns/winestock/" xmlns:ws="http://example.org/ns/winestock/">
+    <xs:element name="Cellar" type="ws:CellarComplexType"/>
+    <xs:element name="WineBottle" type="ws:WineBottleComplexType"/>
+    <xs:complexType name="BottleComplexType">
+        <xs:sequence>
+            <xs:element name="BottleSize">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:float">
+                            <xs:attribute name="unitType"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:choice>
+                <xs:element name="GiftInfo" type="ws:GiftInformationComplexType"/>
+                <xs:element name="PurchaseInfo" type="ws:PurchaseInformationComplexType"/>
+            </xs:choice>
+            <xs:element name="BottleOpenDate" minOccurs="0" type="xs:date"/>
+            <xs:element name="BottleConsumptionDate" maxOccurs="unbounded" minOccurs="0"
+                type="xs:date"/>
+            <xs:element name="BottleNotes" minOccurs="0" type="xs:string"/>
+        </xs:sequence>
+        <xs:attribute name="bottleID" type="xs:ID" use="required"/>
+        <xs:attribute name="bottleStatus" type="ws:BottleStatusSimpleType"/>
+        <xs:attribute name="bottleContents" type="ws:contentTypeSimpleType"/>
+    </xs:complexType>
+    <xs:complexType name="PurchaseInformationComplexType">
+        <xs:sequence>
+            <xs:element name="Date" type="xs:date"/>
+            <xs:element name="Location">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ws:LocationComplexType">
+                            <xs:attribute name="locationType">
+                                <xs:simpleType>
+                                    <xs:restriction base="ws:LocationTypeSimpleType">
+                                        <xs:enumeration value="grocery store"/>
+                                        <xs:enumeration value="producer on-site"/>
+                                        <xs:enumeration value="producer off-site"/>
+                                        <xs:enumeration value="wineshop"/>
+                                        <xs:enumeration value="liquor store"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Price" type="xs:decimal"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="GiftInformationComplexType">
+        <xs:sequence>
+            <xs:element name="GiftDate" type="xs:date"/>
+            <xs:element name="Gifter" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="WineComplexType">
+        <xs:sequence>
+            <xs:element name="Producer" type="ws:WineProducerComplexType"/>
+            <xs:element name="Name" type="ws:DisplayNameSimpleType"/>
+            <xs:element name="Vintage" type="xs:gYear"/>
+            <xs:choice>
+                <xs:element name="KnownVarietal" type="ws:VarietalComplexType" maxOccurs="unbounded"
+                    minOccurs="0"/>
+                <xs:element minOccurs="0" name="UnknownVarietal">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="OriginInformation" type="ws:WineLocationComplexType"/>
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="Type" type="ws:WineTypeSimpleType"/>
+            <xs:element name="SeriesMembership" type="xs:string" minOccurs="0"/>
+            <xs:element name="ProductionSpecs" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="AgingSpecs" type="xs:string" minOccurs="0"/>
+                        <xs:element name="QuantityProduced" minOccurs="0">
+                            <xs:complexType>
+                                <xs:all>
+                                    <xs:element name="Quantity">
+                                        <xs:complexType>
+                                            <xs:simpleContent>
+                                                <xs:extension base="xs:positiveInteger">
+                                                  <xs:attribute name="unitType">
+                                                  <xs:simpleType>
+                                                  <xs:restriction base="xs:string">
+                                                  <xs:enumeration value="bottles"/>
+                                                  <xs:enumeration value="cases"/>
+                                                  </xs:restriction>
+                                                  </xs:simpleType>
+                                                  </xs:attribute>
+                                                </xs:extension>
+                                            </xs:simpleContent>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="DisplayQuantity" type="xs:string"/>
+                                </xs:all>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="WineMakerNotes" type="xs:string" minOccurs="0"/>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="InstrumentMetrics" type="ws:WineMetricsComplexType" minOccurs="0"/>
+            <xs:element name="WineMaker" maxOccurs="unbounded" minOccurs="0"
+                type="ws:WineMakerComplexType"/>
+            <xs:element name="Designation" type="ws:DesignationComplexType" maxOccurs="unbounded"
+                minOccurs="0"/>
+            <xs:element name="Ratings" type="ws:RatingComplexType" maxOccurs="unbounded"
+                minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="WineProducerComplexType">
+        <xs:sequence>
+            <xs:element name="ProducerName" type="ws:DisplayNameSimpleType"/>
+            <xs:element name="ProducerLocation" type="ws:WineLocationComplexType"/>
+            <xs:element name="ProducerStatus" type="ws:StatusSimpleType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="WineMakerComplexType">
+        <xs:sequence>
+            <xs:element name="WineMakerName" type="ws:DisplayNameSimpleType"/>
+            <xs:element name="WineMakerStatus" type="ws:StatusSimpleType"/>
+            <xs:element name="AssociatedProducers" maxOccurs="unbounded"
+                type="ws:WineProducerComplexType"> </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="VineyardComplexType">
+        <xs:all>
+            <xs:element name="VineyardLocation" type="ws:WineLocationComplexType"/>
+            <xs:element name="DatePlanted"/>
+            <xs:element name="SoilDescription"/>
+            <xs:element name="Exposure"/>
+            <xs:element name="OtherNotes"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="VarietalComplexType">
+        <xs:sequence>
+            <xs:element name="VarietalName" type="ws:VarietalSimpleType" maxOccurs="1"/>
+            <xs:element name="VarietalOrigin">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="ws:WineLocationComplexType">
+                            <xs:sequence minOccurs="0">
+                                <xs:element minOccurs="0" name="Vineyard"
+                                    type="ws:VineyardComplexType"/>
+                            </xs:sequence>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="VarietalNotes" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="Portion" type="xs:decimal"/>
+        <xs:attribute name="id" type="xs:ID" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="WineLocationComplexType">
+        <xs:complexContent>
+            <xs:extension base="ws:LocationComplexType">
+                <xs:sequence minOccurs="0">
+                    <xs:element name="Appellation" type="ws:AppellationComplexType"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LocationComplexType">
+        <xs:sequence>
+            <xs:element name="LocationName" type="ws:DisplayNameSimpleType"/>
+            <xs:element name="GeoNamesLocation" type="ws:GeoNamesSimpleType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="WineMetricsComplexType">
+        <xs:all>
+            <xs:element name="Alcohol" type="xs:string"/>
+            <xs:element name="ResidualSugar" type="xs:string"/>
+            <xs:element name="TannicAcid" type="xs:string"/>
+            <xs:element name="pH" type="xs:string"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="AuthorityComplexType">
+        <xs:sequence>
+            <xs:element name="AuthorityName" type="xs:string"/>
+            <xs:element name="Jurisdiction" type="xs:string"/>
+            <xs:element name="SourceDoc" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RatingComplexType">
+        <xs:sequence>
+            <xs:element name="RatingAuthority" type="ws:AuthorityComplexType"/>
+            <xs:element name="RatingValue" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DesignationComplexType">
+        <xs:sequence>
+            <xs:element name="DesignationType" type="xs:string"/>
+            <xs:element name="DesignationValue" type="xs:string"/>
+            <xs:element name="DesignationAuthority" type="ws:AuthorityComplexType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AppellationComplexType">
+        <xs:sequence>
+            <xs:element name="AppellationName" type="ws:AppellationSimpleType"/>
+            <xs:element name="AppellationAuthority" type="ws:AuthorityComplexType"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="WineBottleComplexType">
+        <xs:complexContent>
+            <xs:extension base="ws:BottleComplexType">
+                <xs:sequence>
+                    <xs:element name="Contents">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Wine" type="ws:WineComplexType"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CellarComplexType">
+        <xs:sequence>
+            <xs:element name="CellarInformation">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="cellarLocation" type="ws:LocationComplexType"/>
+                        <xs:element maxOccurs="unbounded" minOccurs="1" name="Owner"
+                            type="xs:integer"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" ref="ws:WineBottle"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="ProductionUnitSimpleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="cases"/>
+            <xs:enumeration value="bottles"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="VarietalSimpleType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="DisplayNameSimpleType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="WineTypeSimpleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Red"/>
+            <xs:enumeration value="White"/>
+            <xs:enumeration value="Rose"/>
+            <xs:enumeration value="Blend"/>
+            <xs:enumeration value="Sparkling"/>
+            <xs:enumeration value="Fruit"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="LocationTypeSimpleType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="GeoNamesSimpleType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="AppellationSimpleType">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:simpleType name="StatusSimpleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ACTIVE"/>
+            <xs:enumeration value="INACTIVE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="BottleStatusSimpleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Wishlist"/>
+            <xs:enumeration value="In cellar"/>
+            <xs:enumeration value="Removed - drank"/>
+            <xs:enumeration value="Removed - gifted"/>
+            <xs:enumeration value="Removed - dropped"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="contentTypeSimpleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="wine"/>
+            <xs:enumeration value="beer"/>
+            <xs:enumeration value="hotsauce"/>
+            <xs:enumeration value="liquor"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
