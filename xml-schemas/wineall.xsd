@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
+    vc:minVersion="1.1" id="all" targetNamespace="http://example.org/ns/all"
+    xmlns="http://example.org/ns/all" xmlns:tsto="http://example.org/ns/tastingnotes"
+    xmlns:wino="http://example.org/ns/winestock/" xmlns:wtsto="http://example.org/ns/winetasting">
+
+    <xs:import namespace="http://example.org/ns/winestock/" schemaLocation="winestock.xsd" id="ws"/>
+    <xs:import namespace="http://example.org/ns/winetasting" schemaLocation="winetasting.xsd"
+        id="wtsto"/>
+    <xs:complexType name="WineInventory">
+        <xs:sequence>
+            <xs:element name="Item">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Contents" type="wino:WineBottleComplexType"/>
+                        <xs:element maxOccurs="unbounded" name="TastingNotes"
+                            type="wtsto:WineTastingComplexType" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Cellar" type="WineInventory"/>
+</xs:schema>
