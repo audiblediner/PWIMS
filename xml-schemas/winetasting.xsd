@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
     xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified"
-    vc:minVersion="1.1">
+    vc:minVersion="1.1" id="tsto" targetNamespace="http://example.org/ns/winetasting"
+    xmlns:wtsto="http://example.org/ns/winetasting">
 
-    <xs:element name="WineTasting" type="WineTastingComplexType"> </xs:element>
+    <xs:element name="WineTasting" type="wtsto:WineTastingComplexType"> </xs:element>
     <xs:complexType name="WineTastingComplexType">
         <xs:complexContent>
-            <xs:extension base="TastingComplexType">
+            <xs:extension base="wtsto:TastingComplexType">
                 <xs:sequence>
-                    <xs:element name="WineTastingNotes" type="WineTastingNotesComplexType"/>
+                    <xs:element name="WineTastingNotes" type="wtsto:WineTastingNotesComplexType"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -17,8 +18,18 @@
         <xs:sequence>
             <xs:element name="TasterName" type="xs:string"/>
         </xs:sequence>
-        <xs:attribute name="tastingDate"/>
-        <xs:attribute name="bottleID"/>
+        <xs:attribute name="tastingDate" type="xs:date"/>
+        <xs:attribute name="bottleID" type="xs:ID"/>
+        <xs:attribute name="tastingSubjectType" fixed="wine">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="wine"/>
+                    <xs:enumeration value="hot sauce"/>
+                    <xs:enumeration value="liquor"/>
+                    <xs:enumeration value="beer"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
     </xs:complexType>
     <xs:complexType name="WineTastingNotesComplexType">
         <xs:sequence>
@@ -30,4 +41,5 @@
             <xs:element name="Overall" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
+
 </xs:schema>

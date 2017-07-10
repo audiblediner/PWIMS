@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
-    targetNamespace="http://example.org/ns/winestock/" xmlns:ws="http://example.org/ns/winestock/">
+    targetNamespace="http://example.org/ns/winestock/" id="wino"
+    xmlns:ws="http://example.org/ns/winestock/">
     <xs:element name="Cellar" type="ws:CellarComplexType"/>
-    <xs:element name="WineBottle" type="ws:WineBottleComplexType"/>
+    <xs:element name="WineBottle" type="ws:WineComplexType"/>
     <xs:complexType name="BottleComplexType">
         <xs:sequence>
             <xs:element name="BottleSize">
                 <xs:complexType>
-                    <xs:simpleContent>
-                        <xs:extension base="xs:float">
-                            <xs:attribute name="unitType"/>
+                    <xs:complexContent>
+                        <xs:extension base="ws:BottleSizeComplexType">
+                            <xs:sequence>
+                                <xs:element default="750 mL" name="BottleSizeDisplay"
+                                    type="xs:string"/>
+                            </xs:sequence>
                         </xs:extension>
-                    </xs:simpleContent>
+                    </xs:complexContent>
                 </xs:complexType>
             </xs:element>
             <xs:choice>
@@ -22,10 +26,16 @@
             <xs:element name="BottleConsumptionDate" maxOccurs="unbounded" minOccurs="0"
                 type="xs:date"/>
             <xs:element name="BottleNotes" minOccurs="0" type="xs:string"/>
+            <xs:element name="BottleRecommendedDateRange" type="ws:BottleDateRangeComplexType"/>
+            <xs:choice>
+                <xs:element ref="ws:WineBottle"/>
+            </xs:choice>
         </xs:sequence>
         <xs:attribute name="bottleID" type="xs:ID" use="required"/>
-        <xs:attribute name="bottleStatus" type="ws:BottleStatusSimpleType"/>
-        <xs:attribute name="bottleContents" type="ws:contentTypeSimpleType"/>
+        <xs:attribute name="bottleStatus" type="ws:BottleStatusSimpleType" default="In cellar"/>
+        <xs:attribute name="bottleContents" type="ws:contentTypeSimpleType" default="wine"/>
+        <xs:attribute default="purchase" name="bottleProcurementType"
+            type="ws:BottleProcurementSimpleType"/>
     </xs:complexType>
     <xs:complexType name="PurchaseInformationComplexType">
         <xs:sequence>
@@ -134,10 +144,10 @@
     <xs:complexType name="VineyardComplexType">
         <xs:all>
             <xs:element name="VineyardLocation" type="ws:WineLocationComplexType"/>
-            <xs:element name="DatePlanted"/>
-            <xs:element name="SoilDescription"/>
-            <xs:element name="Exposure"/>
-            <xs:element name="OtherNotes"/>
+            <xs:element name="DatePlanted" type="xs:date"/>
+            <xs:element name="SoilDescription" type="xs:string"/>
+            <xs:element name="Exposure" type="xs:string"/>
+            <xs:element name="OtherNotes" type="xs:string"/>
         </xs:all>
     </xs:complexType>
     <xs:complexType name="VarietalComplexType">
@@ -158,7 +168,7 @@
             <xs:element name="VarietalNotes" type="xs:string" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="Portion" type="xs:decimal"/>
-        <xs:attribute name="id" type="xs:ID" use="required"/>
+        <xs:attribute name="varietalID" type="xs:ID" use="required"/>
     </xs:complexType>
     <xs:complexType name="WineLocationComplexType">
         <xs:complexContent>
@@ -172,7 +182,7 @@
     <xs:complexType name="LocationComplexType">
         <xs:sequence>
             <xs:element name="LocationName" type="ws:DisplayNameSimpleType"/>
-            <xs:element name="GeoNamesLocation" type="ws:GeoNamesSimpleType"/>
+            <xs:element name="GeoNamesLocation" type="ws:GeoNamesLocation"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="WineMetricsComplexType">
@@ -292,4 +302,37 @@
             <xs:enumeration value="liquor"/>
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="BottleProcurementSimpleType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="gift"/>
+            <xs:enumeration value="purchase"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="BottleSizeComplexType">
+        <xs:attribute name="value" default="750" type="xs:float"/>
+        <xs:attribute name="unitType" default="mililiters"/>
+    </xs:complexType>
+    <xs:complexType name="BottleDateRangeComplexType">
+        <xs:sequence>
+            <xs:element name="Recommendation">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="BeginDate" type="xs:gYear"/>
+                        <xs:element name="EndDate" type="xs:gYear"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="recommendationSource">
+            <xs:simpleType>
+                <xs:restriction base="xs:string"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="GeoNamesLocation">
+        <xs:sequence>
+            <xs:element name="geonameid" type="xs:integer"/>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>
